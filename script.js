@@ -8,29 +8,41 @@ let controlHeight = 40;
 let boxWidth = width/size;
 let boxHeight = null;
 let swapSequence = []; // Queue of operations, refers to which swaps to make
+let swapCount = 0 // the number of swaps used to sort
 
 function setup() {
   createCanvas(width, graphHeight+controlHeight);
 
   randomiseButton = createButton('Randomise');
-  randomiseButton.position(0, graphHeight);
+  randomiseButton.position(50, graphHeight+18);
   randomiseButton.mousePressed(randomise);
 
   selectionSortButton = createButton('Selection Sort');
-  selectionSortButton.position(200, graphHeight);
+  selectionSortButton.position(250, graphHeight+18);
   selectionSortButton.mousePressed(selectionSort);
 
   insertionSortButton = createButton('Insertion Sort');
-  insertionSortButton.position(400, graphHeight);
+  insertionSortButton.position(450, graphHeight+18);
   insertionSortButton.mousePressed(insertionSort);
 
   bubbleSortButton = createButton('Bubble Sort');
-  bubbleSortButton.position(600, graphHeight);
+  bubbleSortButton.position(650, graphHeight+18);
   bubbleSortButton.mousePressed(bubbleSort);
 
+  /*
   mergeSortButton = createButton('Merge Sort');
   mergeSortButton.position(800, graphHeight);
   mergeSortButton.mousePressed(mergeSort);
+  */
+
+  /*
+  sizeField = createInput();
+  sizeField.position(800, graphHeight);
+
+  sizeSubmit = createButton('Size');
+  sizeSubmit.position(900, graphHeight);
+  sizeField.mousePressed(resetSketch);
+  */
 
   for (let i = 0; i < size; i++) {
     list.push(i+1);
@@ -39,11 +51,16 @@ function setup() {
 
 function draw() {
   background(220);
+  //size = sizeSlider.value()
+  //boxWidth = width/size;
 
   // make swap in list
   if (swapSequence.length != 0) {
     swap(list, swapSequence[0][0], swapSequence[0][1])
   }
+
+  fill(0);
+  text("Number of Swaps:" + swapCount, 20, 30);
 
   // This draws the rectangles
   for (var i = 0; i < size; i++) {
@@ -90,6 +107,7 @@ function swap(array, index1, index2) {
   let temp = array[index1];
   array[index1] = array[index2];
   array[index2] = temp;
+  swapCount++;
 } // swap
 
 function selectionSort() {
@@ -99,6 +117,8 @@ function selectionSort() {
     copy.push(list[i])
   }
 
+  swapCount = 0; // reset the swap count since its a new sort
+
   for (let i = 0; i < size; i++) {
     // Find the least value from unsorted onwards
     let leastIndex = i
@@ -107,9 +127,12 @@ function selectionSort() {
         leastIndex = j
       }
     }
-    // swap
-    swapSequence.push([leastIndex, i])
-    swap(copy, leastIndex, i)
+    if (leastIndex != i) {
+      // swap
+      swapSequence.push([leastIndex, i])
+      swap(copy, leastIndex, i)
+    }
+
   }
 } // selectionSort
 
@@ -119,6 +142,8 @@ function insertionSort() {
   for (let i = 0; i < size; i++) {
     copy.push(list[i])
   }
+
+  swapCount = 0; // reset the swap count since its a new sort
 
   for (let i = 1; i < size; i++) {
     // find where i is suppose to be placed
@@ -139,6 +164,8 @@ function bubbleSort() {
     copy.push(list[i])
   }
 
+  swapCount = 0; // reset the swap count since its a new sort
+
   let swapped;
   do {
     swapped = false;
@@ -152,3 +179,13 @@ function bubbleSort() {
     }
   } while (swapped);
 } // bubbleSort
+
+/*
+function resetSketch() {
+  size = sizeField.value();
+  boxWidth = width/size;
+  for (let i = 0; i < size; i++) {
+    list.push(i+1);
+  }
+} // resetSketch
+*/
