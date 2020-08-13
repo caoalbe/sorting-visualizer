@@ -1,7 +1,7 @@
 // Albert Cao
 
 let list = [];
-let size = 150;
+let size = 100; // lower bound is 1
 let width = 920;
 let graphHeight = 480;
 let controlHeight = 40;
@@ -16,9 +16,21 @@ function setup() {
   randomiseButton.position(0, graphHeight);
   randomiseButton.mousePressed(randomise);
 
-  sortButton = createButton('Selection Sort');
-  sortButton.position(200, graphHeight);
-  sortButton.mousePressed(selectionSort)
+  selectionSortButton = createButton('Selection Sort');
+  selectionSortButton.position(200, graphHeight);
+  selectionSortButton.mousePressed(selectionSort);
+
+  insertionSortButton = createButton('Insertion Sort');
+  insertionSortButton.position(400, graphHeight);
+  insertionSortButton.mousePressed(insertionSort);
+
+  bubbleSortButton = createButton('Bubble Sort');
+  bubbleSortButton.position(600, graphHeight);
+  bubbleSortButton.mousePressed(bubbleSort);
+
+  mergeSortButton = createButton('Merge Sort');
+  mergeSortButton.position(800, graphHeight);
+  mergeSortButton.mousePressed(mergeSort);
 
   for (let i = 0; i < size; i++) {
     list.push(i+1);
@@ -82,7 +94,7 @@ function swap(array, index1, index2) {
 
 function selectionSort() {
   // create copy of list to sort
-  copy = []
+  let copy = []
   for (let i = 0; i < size; i++) {
     copy.push(list[i])
   }
@@ -95,7 +107,48 @@ function selectionSort() {
         leastIndex = j
       }
     }
+    // swap
     swapSequence.push([leastIndex, i])
     swap(copy, leastIndex, i)
   }
 } // selectionSort
+
+function insertionSort() {
+  // create copy of list to sort
+  let copy = []
+  for (let i = 0; i < size; i++) {
+    copy.push(list[i])
+  }
+
+  for (let i = 1; i < size; i++) {
+    // find where i is suppose to be placed
+    for (let j = i-1; j >= 0; j--) {
+      if (copy[j][0] > copy[j+1][0]) {
+        //swap
+        swapSequence.push([j, j+1])
+        swap(copy, j, j+1)
+      }
+    }
+  }
+} // insertionSort
+
+function bubbleSort() {
+  // create copy of list to sort
+  let copy = []
+  for (let i = 0; i < size; i++) {
+    copy.push(list[i])
+  }
+
+  let swapped;
+  do {
+    swapped = false;
+    for (let i = 0; i < size - 1; i++) {
+      if (copy[i][0] > copy[i+1][0]) {
+        // swap
+        swapSequence.push([i, i+1]);
+        swap(copy, i, i+1);
+        swapped = true;
+      }
+    }
+  } while (swapped);
+} // bubbleSort
