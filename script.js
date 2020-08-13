@@ -8,7 +8,8 @@ let controlHeight = 40;
 let boxWidth = width/size;
 let boxHeight = null;
 let swapSequence = []; // Queue of operations, refers to which swaps to make
-let swapCount = 0 // the number of swaps used to sort
+let swapCount = 0; // the number of swaps used to sort
+let comparisonCount = 0;
 
 function setup() {
   createCanvas(width, graphHeight+controlHeight);
@@ -61,6 +62,7 @@ function draw() {
 
   fill(0);
   text("Number of Swaps:" + swapCount, 20, 30);
+  text("Number of Comparisons:" + comparisonCount, 20, 50);
 
   // This draws the rectangles
   for (var i = 0; i < size; i++) {
@@ -118,6 +120,7 @@ function selectionSort() {
   }
 
   swapCount = 0; // reset the swap count since its a new sort
+  comparisonCount = 0;
 
   for (let i = 0; i < size; i++) {
     // Find the least value from unsorted onwards
@@ -126,12 +129,14 @@ function selectionSort() {
       if (copy[j][0] < copy[leastIndex][0]) {
         leastIndex = j
       }
+      comparisonCount++;
     }
     if (leastIndex != i) {
       // swap
       swapSequence.push([leastIndex, i])
       swap(copy, leastIndex, i)
     }
+
 
   }
 } // selectionSort
@@ -144,6 +149,7 @@ function insertionSort() {
   }
 
   swapCount = 0; // reset the swap count since its a new sort
+  comparisonCount = 0;
 
   for (let i = 1; i < size; i++) {
     // find where i is suppose to be placed
@@ -153,6 +159,7 @@ function insertionSort() {
         swapSequence.push([j, j+1])
         swap(copy, j, j+1)
       }
+      comparisonCount++;
     }
   }
 } // insertionSort
@@ -165,6 +172,7 @@ function bubbleSort() {
   }
 
   swapCount = 0; // reset the swap count since its a new sort
+  comparisonCount = 0;
 
   let swapped;
   do {
@@ -176,6 +184,7 @@ function bubbleSort() {
         swap(copy, i, i+1);
         swapped = true;
       }
+      comparisonCount++;
     }
   } while (swapped);
 } // bubbleSort
