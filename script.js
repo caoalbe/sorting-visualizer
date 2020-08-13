@@ -1,12 +1,13 @@
 // Albert Cao
 
 let list = [];
-let size = 50;
-let width = 960;
+let size = 150;
+let width = 920;
 let graphHeight = 480;
 let controlHeight = 40;
 let boxWidth = width/size;
 let boxHeight = null;
+let swapSequence = []; // Queue of operations, refers to which swaps to make
 
 function setup() {
   createCanvas(width, graphHeight+controlHeight);
@@ -15,8 +16,9 @@ function setup() {
   randomiseButton.position(0, graphHeight);
   randomiseButton.mousePressed(randomise);
 
-  sortButton = createButton('Sort');
+  sortButton = createButton('Selection Sort');
   sortButton.position(200, graphHeight);
+  sortButton.mousePressed(selectionSort)
 
   for (let i = 0; i < size; i++) {
     list.push(i+1);
@@ -26,18 +28,74 @@ function setup() {
 function draw() {
   background(220);
 
+  // make swap in list
+  if (swapSequence.length != 0) {
+    swap(list, swapSequence[0][0], swapSequence[0][1])
+  }
+
   // This draws the rectangles
-  for (let i = 0; i < size; i++) {
+  for (var i = 0; i < size; i++) {
     boxHeight = list[i]*graphHeight/size;
     // rect draws from top left corner
+    fill(255,204,0);
+    if (size > 250) { // handle outlines
+      noStroke()
+    }
+    if (swapSequence.length != 0) { // highlight swaps
+      if (i == swapSequence[0][0] || i == swapSequence[0][1])
+      fill(0)
+    }
     rect(boxWidth*i, graphHeight-boxHeight, boxWidth, boxHeight);
   }
+
+  // dequeue
+  if (swapSequence.length != 0) {
+    swapSequence.splice(0,1)
+  }
+
+
 } // draw
 
 
 function randomise() {
-  // Figure out if this should be with or without replacement
+  // randomises without replacement
+  let bucket = [];
+  let index = 0;
+
   for (let i = 0; i < size; i++) {
-    list[i] = Math.random()*size
+    bucket.push(i+1);
   }
+
+  for (let i = 0; i < size; i++) {
+    index = Math.floor(Math.random()*bucket.length);
+    list[i] = bucket.splice(index, 1);
+  }
+
 } // randomise
+
+function swap(array, index1, index2) {
+  // swaps 2 values in <array> based on indices
+  let temp = array[index1];
+  array[index1] = array[index2];
+  array[index2] = temp;
+} // swap
+
+function selectionSort() {
+  // create copy of list to sort
+  copy = []
+  for (let i = 0; i < size; i++) {
+    copy.push(list[i])
+  }
+
+  for (let i = 0; i < size; i++) {
+    // Find the least value from unsorted onwards
+    let leastIndex = i
+    for (let j = i; j < size; j++) {
+      if (copy[j][0] < copy[leastIndex][0]) {
+        leastIndex = j
+      }
+    }
+    swapSequence.push([leastIndex, i])
+    swap(copy, leastIndex, i)
+  }
+} // selectionSort
